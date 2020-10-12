@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <title>Correlation & Regression</title>
+</head>
+<body>
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+          <h1 class="display-4">Instructions</h1>
+          <p class="lead">Use spaces when adding values(e.g. 14 15 17).Do not use double space.</p>
+          <p class="lead">Refresh the page when you want to re-calculate.</p>
+          <p class="lead">Happy calculating Enjoy</p>
+        </div>
+      </div>
+
+    <div class="container">
+        
+            <label for="formControlRange">Enter value of x</label>
+            <input id="valueofx" class="form-control" type="text" placeholder="" name="valueofx" onchange=lengthChecker() required />
+
+            <label for="formControlRange">Enter value of y</label>
+            <input id="valueofy" class="form-control" type="" placeholder="" name="valueofy" onchange=lengthChecker() required />
+
+            <button type="submit" class="btn btn-primary" onclick=calculator() >Calculate</button>
+        
+
+        <ul class="list-group" id="my-list" style="list-style: none; padding-top: 2rem ;">
+            <!--<li id="test" class="list-group-item active" ></li>
+            <li class="list-group-item">Dapibus ac facilisis in</li>
+            <li class="list-group-item">Morbi leo risus</li>
+            <li class="list-group-item">Porta ac consectetur ac</li>
+            <li class="list-group-item">Vestibulum at eros</li> -->
+          </ul>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <!-- <script src="/script.js"></script> -->
+    <script>
+        function lengthChecker()
+        {
+            var x = document.getElementById("valueofx").value;
+            var y = document.getElementById("valueofy").value;
+            
+            
+            if(!(/^(\s*[0-9]+\s*)+$/.test(x)) && x != "")
+            {
+                document.getElementById("valueofx").value = "";
+                alert("Enter integer values only");
+            }
+
+            if(!(/^(\s*[0-9]+\s*)+$/.test(y)) && y != "")
+            {
+                document.getElementById("valueofy").value = "";
+                alert("Enter integer values only");
+            }
+
+            x = x.split(" ");
+            y = y.split(" ");
+            
+            if(x.length > 1 && y.length > 1 && x.length != y.length)
+            {
+                document.getElementById("valueofy").value = "";
+                alert("Enter equal values in X and Y");
+            }
+        
+        }
+    </script>
+    <script>
+        function calculator()
+        {
+            var x = document.getElementById("valueofx").value;
+            var y = document.getElementById("valueofy").value;
+            x = x.split(" ");
+            y = y.split(" "); 
+
+            for(var j=0;j<x.length;j++)
+            {
+                x[j] = parseInt(x[j]);
+            }
+
+            for(var j=0;j<y.length;j++)
+            {
+                y[j] = parseInt(y[j]);
+            }
+
+            var xSquare = [], ySquare = [],xy = [];
+            var n = x.length;
+            // [65,66,67,67,68,69,70,72], y = [67,68,65,68,72,72,69,71] 
+            square(x,"x");
+            square(y,"y");
+
+               // console.log(x,y)
+
+            function square(ar,check)
+            {
+                var arr = [];
+                for(var i=0;i<ar.length;i++)
+                {
+                    arr[i] = ar[i]*ar[i];
+                    xy[i] = x[i]*y[i];
+                }
+                check == 'x' ? xSquare = arr : ySquare = arr;
+            }
+          //  console.log(xSquare+" "+ySquare+" "+xy);
+            /////////////////////////////////////////////Submission////////////////////////////////////////
+            var xSub = Submission(x);
+            var ySub = Submission(y);
+            var xSquareSub = Submission(xSquare);
+            var ySquareSub = Submission(ySquare);
+            var xySub = Submission(xy);
+
+            //console.log(xSub+" "+ySub+" "+xySub);
+
+            function Submission(vr)
+            {
+                return vr.reduce((accumulator, currentNumber) => {
+                    return accumulator + currentNumber;
+                })
+                
+            }
+
+            /////////////////////////////Coveriance/////////////////////////////////////
+            const cov = ((xySub/n) - ((xSub)/n*(ySub)/n)).toFixed(2);
+
+            //console.log(cov);
+
+            /////////////////////////////////////////Sigma//////////////////////////////////
+            var xSigma = Math.sqrt(xSquareSub/n - Math.pow(xSub/n, 2));
+            xSigma = parseFloat(xSigma).toFixed(3);
+
+            var ySigma = Math.sqrt(ySquareSub/n - Math.pow(ySub/n, 2));
+            ySigma = parseFloat(ySigma).toFixed(3);
+
+            //console.log(xSigma+" "+ySigma)
+
+            ///////////////////////////////////Correlation/////////////////////////////
+            const corr = (cov/(xSigma*ySigma)).toFixed(2);
+
+            //////////////////////////////////Mean///////////////////////////////////////
+            const xMean = Math.floor(xSub/n);
+            const yMean = Math.floor(ySub/n);
+
+            //console.log(xMean+" "+yMean);
+
+            ////////////////////////////////////////Regression////////////////////////////////////
+
+            var xB = (corr*(xSigma/ySigma)).toFixed(2);
+            var xB2 = ((xB*yMean)).toFixed(2);
+            xB2 = (-xB2 + xMean).toFixed(2);
+            var xReg = "";
+
+            Math.sign(xB2) == 1 ? xReg = "x = "+ xB+"y + "+xB2 : xReg = "x = "+ xB+"y "+xB2;
+
+            var yB = (corr*(ySigma/xSigma)).toFixed(2);
+            var yB2 = ((yB*xMean)).toFixed(2);
+            yB2 = (-yB2 + yMean).toFixed(2);
+            var yReg = "";
+
+            Math.sign(yB2) == 1 ? yReg = "y = "+ yB+"x + "+yB2 : yReg = "y = "+ yB+"x "+yB2;
+           // console.log(xReg);
+
+          //  document.getElementById("test").innerHTML = xReg;
+
+            ///////////////////DOM///////////////////////////////////////////////
+
+            var myList = document.getElementById('my-list');
+            //var count = document.getElementById("my-list").childElementCount;
+            // console.log(count);
+            // if(document.getElementById("my-list").childElementCount != 0)
+            //     remove();
+
+            function remove()
+            {
+                for(var k=0;k<count;k++)
+                {
+                    myList.removeChild(myList.childNodes[k]);
+                }
+                
+            }
+
+            function createListItem (text)
+            {
+                var li = document.createElement('li');
+                li.textContent = text;
+                return li;
+            }
+
+            function appendChildren (parent, childern)
+            {
+                childern.forEach( function (child){
+                    parent.appendChild(child);
+                })
+            }
+
+            
+
+            var items= [
+                createListItem('Correlation : '+corr),
+                createListItem('Regression(X on Y) : '+xReg),
+                createListItem('Regression(Y on X) : '+yReg),
+                createListItem('Sigma(X) : '+xSigma),
+                createListItem('Sigma(Y) : '+ySigma),
+                createListItem('Coveriance : '+cov),
+                createListItem('Mean(X) : '+xMean),
+                createListItem('Mean(Y) : '+yMean),
+                createListItem('Submission(x) : '+xSub),
+                createListItem('Submission(y) : '+ySub),
+                createListItem('Submission(x*x) : '+xSquareSub),
+                createListItem('Submission(y*y) : '+ySquareSub),
+                createListItem('Submission(xy) : '+xySub)
+            ];
+
+            appendChildren(myList, items);
+            
+
+        }
+
+
+
+
+    </script>
+</body>
+</html>
